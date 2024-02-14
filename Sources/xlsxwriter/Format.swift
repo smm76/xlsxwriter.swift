@@ -135,5 +135,6 @@ public struct Color {
   public static var silver: Self = Self(hex: 0xC0C0C0)
   public static var white: Self = Self(hex: 0xFFFFFF)
   public static var yellow: Self = Self(hex: 0xFFFF00)
+  public static var evia:Self = Self(hex: 0xFF426a82)
 }
 
