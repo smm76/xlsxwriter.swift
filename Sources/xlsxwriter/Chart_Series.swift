@@ -10,10 +10,10 @@ public struct Chart {
   let lxw_chart: UnsafeMutablePointer<lxw_chart>
   init(_ lxw_chart: UnsafeMutablePointer<lxw_chart>) { self.lxw_chart = lxw_chart }
   /// Add a data series to a chart.
-  @discardableResult public func addSeries(values: String? = nil, name: String? = nil) -> Series {
+  @discardableResult public func addSeries(values: String? = nil, categories: String? = nil, name: String? = nil) -> Series {
     let series: Series
     if let values = values {
-      series = values.withCString { Series(chart_add_series(lxw_chart, nil, $0)) }
+      series = values.withCString { Series(chart_add_series(lxw_chart, categories, $0)) }
     } else {
       series = Series(chart_add_series(lxw_chart, nil, nil))
     }
