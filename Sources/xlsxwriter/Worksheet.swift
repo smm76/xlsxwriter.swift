@@ -82,15 +82,16 @@ public struct Worksheet {
     return self
   }
  
-  /// Validate Cell
-  @discardableResult public func validate(
-    _ row: Int, col: Int = 0
+  /// Validate List of Strings in a Cell (Dropdown)
+  @discardableResult public func validateList(
+    _ values: [String], row: Int, col: Int = 0
   ) -> Worksheet {
      // Allocate memory for lxw_data_validation
     let data_validation = UnsafeMutablePointer<lxw_data_validation>.allocate(capacity: 1)
     data_validation.initialize(to: lxw_data_validation())
 
-    let list = ["open", "high", "close", nil]
+    let list = values
+    list.append(nil)
 
     let cList = list.map { $0?.withCString { strdup($0) } }
 
