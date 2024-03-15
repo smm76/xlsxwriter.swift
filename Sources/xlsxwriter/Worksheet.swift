@@ -91,8 +91,9 @@ public struct Worksheet {
     data_validation.initialize(to: lxw_data_validation())
 
     // Set properties of lxw_data_validation
-    data_validation.pointee.validate = LXW_VALIDATION_TYPE_INTEGER
-    data_validation.pointee.criteria = LXW_VALIDATION_CRITERIA_BETWEEN
+    data_validation.pointee.validate = UInt8(LXW_VALIDATION_TYPE_INTEGER.rawValue)
+    data_validation.pointee.criteria = UInt8(LXW_VALIDATION_CRITERIA_BETWEEN.rawValue)
+
     data_validation.pointee.minimum_number = 1
     data_validation.pointee.maximum_number = 10
 
