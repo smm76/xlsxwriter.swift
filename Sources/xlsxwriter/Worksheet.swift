@@ -81,6 +81,23 @@ public struct Worksheet {
 
     return self
   }
+ 
+  /// Validate Cell
+  @discardableResult public func validate(
+    _ row: Int, col: Int = 0
+  ) -> Worksheet {
+    lxw_data_validation *data_validation = calloc(1, sizeof(lxw_data_validation));
+    
+    data_validation->validate       = LXW_VALIDATION_TYPE_INTEGER;
+    data_validation->criteria       = LXW_VALIDATION_CRITERIA_BETWEEN;
+    data_validation->minimum_number = 1;
+    data_validation->maximum_number = 10;
+    let r = UInt32(row)
+    var c = UInt16(col)
+    worksheet_data_validation_cell(lxw_worksheet, r, c, data_validation);
+
+    return self
+  }
   /// Write data to a worksheet cell by calling the appropriate
   /// worksheet_write_*() method based on the type of data being passed.
   @discardableResult public func write(_ value: Value, _ cell: Cell, format: Format? = nil)
