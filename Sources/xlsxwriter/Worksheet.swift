@@ -92,6 +92,8 @@ public struct Worksheet {
 
     let list = ["open", "high", "close", nil]
 
+    let cList = list.map { $0?.withCString(strdup) }
+
     // Convert the C array to an UnsafeMutablePointer<UnsafePointer<CChar>?>
     let cListPointer = UnsafeMutablePointer<UnsafePointer<CChar>?>.allocate(capacity: list.count + 1)
 
