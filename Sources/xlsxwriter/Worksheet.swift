@@ -90,7 +90,7 @@ public struct Worksheet {
     let data_validation = UnsafeMutablePointer<lxw_data_validation>.allocate(capacity: 1)
     data_validation.initialize(to: lxw_data_validation())
 
-    let list = values
+    var list = values
     list.append(nil)
 
     let cList = list.map { $0?.withCString { strdup($0) } }
