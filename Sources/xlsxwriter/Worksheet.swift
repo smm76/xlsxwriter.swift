@@ -92,18 +92,21 @@ public struct Worksheet {
 
     let list = ["open", "high", "close", nil]
 
-    let cList = list.map { $0?.withCString(strdup) }
+    // Convert the C array to an UnsafeMutablePointer<UnsafePointer<CChar>?>
+    let cListPointer = UnsafeMutablePointer<UnsafePointer<CChar>?>.allocate(capacity: list.count + 1)
 
-    // Convert the C array to an UnsafeMutablePointer<UnsafePointer<Int8>?>
-    let cListPointer = UnsafeMutablePointer<UnsafeMutablePointer<Int8>?>.allocate(capacity: list.count + 1)
-    cList.enumerated().forEach { (index, str) in
-        cListPointer[index] = str
+    // Assign the elements of cListPointer correctly
+    for (index, str) in cList.enumerated() {
+        cListPointer[index] = UnsafePointer<CChar>(str)
     }
+
+    // Set the terminator to nil
     cListPointer[list.count] = nil
 
     // Set the value_list property of data_validation
     data_validation.pointee.validate = UInt8(LXW_VALIDATION_TYPE_LIST.rawValue)
     data_validation.pointee.value_list = cListPointer
+    
 
     // Don't forget to deallocate memory when you're done
     cListPointer.deallocate()
