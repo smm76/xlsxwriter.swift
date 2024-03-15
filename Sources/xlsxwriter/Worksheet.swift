@@ -92,15 +92,17 @@ public struct Worksheet {
 
     let list = ["open", "high", "close", nil]
 
-    // Convert the Swift array to a C array of pointers
     let cList = list.map { $0?.withCString(strdup) }
 
     // Convert the C array to an UnsafeMutablePointer<UnsafePointer<Int8>?>
-    let cListPointer = UnsafeMutablePointer<UnsafePointer<Int8>?>.allocate(capacity: list.count + 1)
-    cListPointer.initialize(from: cList, count: list.count)
+    let cListPointer = UnsafeMutablePointer<UnsafeMutablePointer<Int8>?>.allocate(capacity: list.count + 1)
+    cList.enumerated().forEach { (index, str) in
+        cListPointer[index] = str
+    }
+    cListPointer[list.count] = nil
 
     // Set the value_list property of data_validation
-    data_validation.pointee.validate = LXW_VALIDATION_TYPE_LIST
+    data_validation.pointee.validate = UInt8(LXW_VALIDATION_TYPE_LIST.rawValue)
     data_validation.pointee.value_list = cListPointer
 
     // Don't forget to deallocate memory when you're done
