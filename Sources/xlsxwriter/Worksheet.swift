@@ -86,15 +86,22 @@ public struct Worksheet {
   @discardableResult public func validate(
     _ row: Int, col: Int = 0
   ) -> Worksheet {
-    lxw_data_validation *data_validation = calloc(1, sizeof(lxw_data_validation));
-    
-    data_validation->validate       = LXW_VALIDATION_TYPE_INTEGER;
-    data_validation->criteria       = LXW_VALIDATION_CRITERIA_BETWEEN;
-    data_validation->minimum_number = 1;
-    data_validation->maximum_number = 10;
+     // Allocate memory for lxw_data_validation
+    let data_validation = UnsafeMutablePointer<lxw_data_validation>.allocate(capacity: 1)
+    data_validation.initialize(to: lxw_data_validation())
+
+    // Set properties of lxw_data_validation
+    data_validation.pointee.validate = LXW_VALIDATION_TYPE_INTEGER
+    data_validation.pointee.criteria = LXW_VALIDATION_CRITERIA_BETWEEN
+    data_validation.pointee.minimum_number = 1
+    data_validation.pointee.maximum_number = 10
+
     let r = UInt32(row)
-    var c = UInt16(col)
-    worksheet_data_validation_cell(lxw_worksheet, r, c, data_validation);
+    let c = UInt16(col)
+    worksheet_data_validation_cell(lxw_worksheet, r, c, data_validation)
+
+    // Don't forget to deallocate memory when you're done with data_validation
+    data_validation.deallocate()
 
     return self
   }
