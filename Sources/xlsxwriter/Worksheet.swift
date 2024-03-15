@@ -99,9 +99,10 @@ public struct Worksheet {
 
     // Assign the elements of cListPointer correctly
     for (index, str) in cList.enumerated() {
-        cListPointer[index] = str
+        // Cast str to the correct type
+        let cStringPointer = UnsafePointer<CChar>(str)
+        cListPointer[index] = cStringPointer
     }
-
     // Set the terminator to nil
     cListPointer[list.count] = nil
 
