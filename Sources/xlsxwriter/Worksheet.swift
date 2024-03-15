@@ -92,26 +92,29 @@ public struct Worksheet {
 
     let list = ["open", "high", "close", nil]
 
-    let cList = list.map { $0?.withCString(strdup) }
+    let cList = list.map { $0?.withCString { strdup($0) } }
 
-    // Convert the C array to an UnsafeMutablePointer<UnsafePointer<CChar>?>
+    // Allocate memory for the C-style array of pointers
     let cListPointer = UnsafeMutablePointer<UnsafePointer<CChar>?>.allocate(capacity: list.count + 1)
 
     // Assign the elements of cListPointer correctly
     for (index, str) in cList.enumerated() {
-        cListPointer[index] = UnsafePointer<CChar>(str)
+        cListPointer[index] = str
     }
 
     // Set the terminator to nil
     cListPointer[list.count] = nil
 
-    // Set the value_list property of data_validation
     data_validation.pointee.validate = UInt8(LXW_VALIDATION_TYPE_LIST.rawValue)
     data_validation.pointee.value_list = cListPointer
-    
 
-    // Don't forget to deallocate memory when you're done
-    cListPointer.deallocate()
+    // Deallocate memory for the C-style array of pointers
+    defer {
+        cListPointer.deinitialize(count: list.count + 1)
+        cListPointer.deallocate()
+    }
+
+    
 
     let r = UInt32(row)
     let c = UInt16(col)
